@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column; /* 세로로 나란히 배치 */
+        }
+
+        .login-button {
+            border: none;
+            background: none;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .login-button img {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+
+<button class="login-button" onclick="showLoginPopup();">
+    <img src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F995B4C375C3D83CA26" width="300" />
+</button>
+
+</div>
+</body>
+
+<script>
+
+    // 네이버 로그인을 위한 팝업창 생성
+    function showLoginPopup(){
+        let uri = 'https://nid.naver.com/oauth2.0/authorize?' +
+            'response_type=code' +                  // 인증과정에 대한 내부 구분값 code 로 전공 (고정값)
+            '&client_id=XGxQq_tl4w8M7bdkGhxq' +     // 발급받은 client_id 를 입력
+            '&state=NAVER_LOGIN_TEST' +             // CORS 를 방지하기 위한 특정 토큰값(임의값 사용)
+            '&redirect_uri=http://localhost:8080/naver/callback';   // 어플케이션에서 등록했던 CallBack URL를 입력
+
+        // 사용자가 사용하기 편하게끔 팝업창으로 띄어준다.
+        window.location.href = uri, "Naver Login Test PopupScreen", "width=1800, height=1000";
+    }
+
+</script>
+
+</html>

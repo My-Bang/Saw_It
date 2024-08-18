@@ -1,0 +1,28 @@
+spring:
+  resources:
+    static-locations: classpath:/static/css/map.css
+
+  jpa:
+    show-sql: true
+    properties:
+      format_sql: true
+      dialect: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://localhost:3306/board?useSSL=false&useUnicode=true&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root1234!!
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+    mode: HTML
+
+api:
+  naver:
+    client_id: XGxQq_tl4w8M7bdkGhxq
+    client_secret: lc7UemRxlE
+

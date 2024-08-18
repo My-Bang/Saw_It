@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Interface</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        /* 전체 페이지를 위한 스타일 */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* 채팅 컨테이너 스타일 */
+        #chat-container {
+            display: none; /* 기본적으로 숨김 */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* 가운데 정렬 */
+            width: 300px;
+            height: 400px;
+            background: white;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 4;
+            overflow: hidden;
+        }
+
+        /* 채팅 메시지 영역 스타일 */
+        #chat-messages {
+            height: 350px;
+            overflow-y: auto;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        /* 채팅 입력창 스타일 */
+        #chat-input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-top: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+<div id="chat-container">
+    <div id="chat-messages"></div>
+    <input id="chat-input" type="text" placeholder="Type a message..." />
+</div>
+
+<script>
+    var stompClient = null;
+    var senderName = prompt("Enter your name:");
+
+    function toggleChat() {
+        var chatContainer = document.getElementById('chat-container');
+        chatContainer.style.display = 'block'; // 채팅창을 표시합니다.
+
+        if (stompClient === null) {
+            connectToChat();
+        }
+    }
+
+    function connectToChat() {
+        var socket = new SockJS('/ws');  // 서버의 WebSocket 엔드포인트를 맞게 설정하세요.
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, onConnected, onError);
+    }
+
+    function onConnected() {
+        stompClient.subscribe('/topic/public', onMessageReceived);
+        stompClient.send("/app/chat.addUser", {}, JSON.stringify({ sender: senderName, type: 'JOIN' }));
+    }
+
+    function onError(error) {
+        console.error('WebSocket connection error:', error);
+        alert('Could not connect to the chat server. Please try again later.');
+    }
+
+    function sendMessage(event) {
+        var messageInput = document.getElementById('chat-input');
+        var messageContent = messageInput.value.trim();
+
+        if (messageContent && stompClient) {
+            var chatMessage = {
+                sender: senderName,
+                content: messageContent,
+                type: 'CHAT'
+            };
+            stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+            messageInput.value = '';
+        }
+        event.preventDefault();
+    }
+
+    function onMessageReceived(payload) {
+        var message = JSON.parse(payload.body);
+        var messageElement = document.createElement('div');
+        messageElement.textContent = `${message.sender}: ${message.content}`;
+        document.getElementById('chat-messages').appendChild(messageElement);
+    }
+
+    document.getElementById('chat-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage(e);
+        }
+    });
+
+    // 페이지가 로드될 때 자동으로 채팅창을 표시합니다.
+    window.onload = function() {
+        toggleChat();
+    };
+</script>
+</body>
+</html>

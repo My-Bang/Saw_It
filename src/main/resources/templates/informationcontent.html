@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 상세 페이지</title>
+</head>
+<body>
+
+<h1 th:text="${information.title}"></h1>
+<p th:text="${information.content}"></p>
+<a th:href="@{/information/delete(id=${information.id})}">삭제</a>
+<a th:href="@{/information/modify/{id}(id=${information.id})}">수정</a>
+<a th:href="@{/information/list}">목록</a>
+
+<!-- 이미지 파일이 존재할 때만 이미지를 표시하고, 새로운 창에서 열리도록 설정 -->
+<a th:if="${information.filepath != null}" th:href="@{${information.filepath}}" target="_blank">이미지 보기</a>
+
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script th:inline="javascript">
+    /* <![CDATA[ */
+
+    var message = [[${message}]]; // 메시지 변수를 가져옵니다.
+    alert(message); // 메시지를 알림으로 표시합니다.
+
+    var url = [[${url}]]; // URL 변수를 가져옵니다.
+
+    // 메시지가 있으면, 지정된 URL로 리다이렉트합니다.
+    if (message) {
+        location.replace(url);
+    }
+
+    /*]]*/
+</script>
+
+</body>
+</html>

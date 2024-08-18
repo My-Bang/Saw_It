@@ -1,0 +1,291 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+#header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 2;
+}
+#header img {
+    width: 200px;
+    height: 100px;
+}
+#menu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    height: 70px;
+    position: absolute;
+    top: 100px;
+    width: 100%;
+    z-index: 3;
+}
+.menu-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    color: black;
+    transition: background-color 0.3s;
+    position: relative;
+    font-size: 20px;
+    margin: 0 10px;
+}
+.menu-item:hover {
+    background-color: #555;
+}
+#map-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    height: calc(100vh - 170px);
+    position: absolute;
+    top: 170px;
+    z-index: 1;
+}
+#map {
+    width: 100%;
+    height: 100%;
+}
+.search {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    align-items: center;
+}
+.search input[type="text"] {
+    padding: 20px 24px;
+    font-size: 14px;
+    background-color: rgba(242, 242, 242, 0.8);
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 18px 18px;
+    background-position: 95% center;
+    border-radius: 50px;
+    border: 1px solid #575756;
+    transition: all 250ms ease-in-out;
+    width: 300px;
+}
+.search input[type="text"]::placeholder {
+    color: rgba(87, 87, 86, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+.search input[type="text"]:hover,
+.search input[type="text"]:focus {
+    padding: 12px 15px;
+    outline: 0;
+    border: 1px solid transparent;
+    border: 1px solid #575756;
+    border-radius: 10px;
+    background-position: 95% center;
+    background-color: rgba(242, 242, 242, 0.8);
+}
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+ul, ol {
+    list-style: none;
+}
+a {
+    text-decoration: none;
+    color: #000000;
+    font-size: 18px;
+    display: block;
+    padding: 0 20px;
+    height: 70px;
+    line-height: 70px;
+    transition: color 0.3s, background-color 0.3s, transform 0.3s;
+}
+#nav1 > ul li:hover a {
+    color: #2c3e50;
+    background-color: #ecf0f1;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+nav {
+    width: 100%;
+    overflow: hidden;
+    height: 70px;
+    background-color: #fff;
+    margin: 0 auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+#nav1 {
+    text-align: center;
+}
+#nav1 > ul {
+    display: inline-block;
+}
+#nav1 > ul li {
+    display: inline-block;
+    margin: 0 15px;
+    line-height: 70px;
+    position: relative;
+}
+#nav1 > ul li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 50%;
+    background-color: #8C8688;
+}
+@keyframes navSlide {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+nav {
+    animation: navSlide 0.5s ease-out;
+}
+@media (max-width: 768px) {
+    nav {
+        height: auto;
+        padding: 10px 0;
+    }
+    #nav1 > ul {
+        display: block;
+        text-align: center;
+    }
+    #nav1 > ul li {
+        margin: 10px 0;
+    }
+    a {
+        height: auto;
+        line-height: normal;
+        padding: 10px 20px;
+    }
+}
+.wrap {
+    position: absolute;
+    left: 0;
+    bottom: 40px;
+    width: 288px;
+    height: 132px;
+    margin-left: -144px;
+    text-align: left;
+    overflow: hidden;
+    font-size: 12px;
+    font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;
+    line-height: 1.5;
+}
+.wrap * {
+    padding: 0;
+    margin: 0;
+}
+.wrap .info {
+    width: 286px;
+    height: 120px;
+    border-radius: 5px;
+    border-bottom: 2px solid #ccc;
+    border-right: 1px solid #ccc;
+    overflow: hidden;
+    background: #fff;
+}
+.wrap .info:nth-child(1) {
+    border-top: 1px solid #ccc;
+}
+.info .title {
+    height: 30px;
+    line-height: 30px;
+    background: #eee;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    position: relative;
+}
+.info .title .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 16px;
+    height: 16px;
+    background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');
+}
+.info .close:hover {
+    cursor: pointer;
+}
+.info .body {
+    position: relative;
+    overflow: hidden;
+}
+.info .desc {
+    position: relative;
+    margin: 13px 0 0 90px;
+    height: 75px;
+}
+.desc .ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.desc .jibun {
+    font-size: 11px;
+    color: #888;
+    margin-top: -2px;
+}
+.info .img {
+    position: absolute;
+    top: 6px;
+    left: 5px;
+    width: 73px;
+    height: 71px;
+    border: 1px solid #ddd;
+    color: #888;
+    overflow: hidden;
+}
+.info:after {
+    content: '';
+    position: absolute;
+    margin-left: -12px;
+    left: 50%;
+    bottom: 0;
+    width: 22px;
+    height: 12px;
+    background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png');
+}
+.info .link {
+    color: #5085BB;
+}
+#markerButton {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    z-index: 3;
+}
+#markerButton.active {
+    background-color: #28a745;
+}

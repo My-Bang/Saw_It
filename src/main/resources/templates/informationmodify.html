@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 수정페이지</title>
+</head>
+
+<style>
+    .layout {
+        width: 500px;
+        margin: 0 auto;
+        margin-top: 40px;
+    }
+    .layout input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .layout textarea {
+        width: 100%;
+        margin-top: 10px;
+        min-height: 300px;
+    }
+</style>
+
+<body>
+<div class="layout">
+    <form th:action="@{/information/update/{id}(id=${information.id})}" method="post">
+        <input type="hidden" name="id" th:value="${information.id}">
+        제목<input name="title" type="text" th:value="${information.title}">
+        성함<input name="userName" type="text" th:value="${information.userName}">
+        블랙박스 내용<textarea name="content" th:text="${information.content}"></textarea>
+        <button type="submit">저장</button>
+    </form>
+</div>
+</body>
+</html>
