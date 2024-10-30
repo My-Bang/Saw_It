@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>작성자 정보</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .layout {
+            width: 400px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            box-sizing: border-box;
+        }
+
+        .layout h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .layout label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .layout input[type="text"],
+        .layout textarea,
+        .layout button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .layout textarea {
+            height: 150px;
+        }
+
+        .layout button[type="submit"],
+        .layout button[type="button"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .layout button[type="submit"]:hover,
+        .layout button[type="button"]:hover {
+            background-color: #0056b3;
+        }
+
+        #displayUserName {
+            margin-top: -10px;
+            font-size: 16px;
+            color: #333;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+<div class="layout">
+    <h2>작성자 정보</h2>
+    <form action="/consumer/information/writedo" method="post" enctype="multipart/form-data" onsubmit="saveUserName()">
+        <label for="title">제목</label>
+        <input id="title" name="title" type="text" required>
+
+        <label for="userName">성함</label>
+        <input id="userName" name="userName" type="text" required>
+
+        <label for="content">블랙박스 내용</label>
+        <textarea id="content" name="content" rows="8" required></textarea>
+
+        <input type="hidden" name="latitude" id="latitude" required />
+        <input type="hidden" name="longitude" id="longitude" required />
+
+        <button type="submit" >작성</button>
+        <button type="button" onclick="goBack()">뒤로가기</button>
+    </form>
+</div>
+
+<script>
+
+    window.onload = function() {
+        var storedLat = localStorage.getItem('selectedLat');
+        var storedLng = localStorage.getItem('selectedLng');
+
+        if (storedLat && storedLng) {
+            document.getElementById('latitude').value = storedLat;
+            document.getElementById('longitude').value = storedLng;
+
+        }
+    };
+
+    function saveUserName() {
+        var userName = document.getElementById("userName").value;
+        localStorage.setItem("userName", userName);
+    }
+
+    function goBack() {
+        window.history.back();
+    }
+</script>
+
+</body>
+</html>
