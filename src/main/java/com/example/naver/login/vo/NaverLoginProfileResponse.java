@@ -1,6 +1,10 @@
 package com.example.naver.login.vo;
 
+import com.example.naver.login.vo.NaverLoginProfile;
 import lombok.Data;
+
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Data
 public class NaverLoginProfileResponse {
@@ -12,6 +16,18 @@ public class NaverLoginProfileResponse {
     private String message;
 
     // Profile 상세
-    private NaverLoginProfile response;
+    private Response response;
 
+    @Data
+    public static class Response {
+        private String id;
+        private String name;
+        @ManyToOne
+        @JoinColumn(name = "created_by", referencedColumnName = "email")
+        private String email;
+        private String gender;
+        private String birthday;
+        private String birthyear;
+        private String mobile;
+    }
 }

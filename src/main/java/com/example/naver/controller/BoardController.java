@@ -3,6 +3,7 @@ package com.example.naver.controller;
 import com.example.naver.entity.Board;
 import com.example.naver.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.xml.stream.Location;
 
 @Controller
 public class BoardController {
@@ -24,10 +27,6 @@ public class BoardController {
         return "boardwrite";
     }
 
-    @GetMapping("/board/chat")
-    public String boardChat() {
-        return "chat";
-    }
 
     @PostMapping("/board/writedo")
     public String boardWriteDo(Board board, @RequestParam("file") MultipartFile file, Model model) throws Exception {
@@ -108,4 +107,7 @@ public class BoardController {
     public String showMapPage() {
         return "map";
     }
+
+
+
 }

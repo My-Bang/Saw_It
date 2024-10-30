@@ -351,7 +351,7 @@
         <ul>
             <li><a href="#" onclick="navigate('커뮤니티')">커뮤니티</a></li>
             <li><a href="#">전문가 상담</a></li>
-            <li><a href="#">프로필</a></li>
+            <li><a href="#" onclick="navigate('프로필')">프로필</a></li>
             <li><a href="#">menu4</a></li>
             <li><a href="#">menu5</a></li>
         </ul>
@@ -366,20 +366,21 @@
     <button id="markerButton">마커 생성</button>
     <div id="markerTypeSelector" style="display: none;">
         <button id="sellerMarker">판매자 마커</button>
-        <button id="consumerMarker">소비자 마커</button>
+        <button id="consumerMarker">구매자 마커</button>
     </div>
     <div id="clickLatlng" style="position: absolute; bottom: 20px; left: 20px; background: white; padding: 10px; border: 1px solid #ddd;"></div>
 </div>
-<div id="coordinatesDisplay" style="position: absolute; top: 10px; left: 10px; background-color: white; padding: 5px; border: 1px solid black; z-index: 1000;">
-    좌표: N/A
-</div>
+
 
 <script>
-    function navigate(page) {
-        if (page === '커뮤니티') {
+    function navigate(destination) {
+        if (destination === '커뮤니티') {
             window.location.href = 'http://localhost:8080/board/list';
+        } else if (destination === '프로필') {
+            window.location.href = 'http://localhost:8080/naver/userprofile';
         }
     }
+
 
     var mapContainer = document.getElementById('map'),
         mapOption = {
@@ -398,8 +399,8 @@
     var currentOverlay = null;
     var isMarkerButtonActive = false;
     var selectedMarkerType = null;
-    var currentSellerMarker = null; // 현재 판매자 마커를 추적하기 위한 변수
-    var currentConsumerMarker = null; // 현재 소비자 마커를 추적하기 위한 변수
+    var currentSellerMarker = null;         // 현재 판매자 마커를 추적하기 위한 변수
+    var currentConsumerMarker = null;       // 현재 구매자 마커를 추적하기 위한 변수
 
     function searchAddress() {
         var address = document.getElementById('address').value;
@@ -448,65 +449,75 @@
         });
     }
 
-var markerLat;
-var markerLng;
 
-   function addClickMarker(latlng) {
-    if (isMarkerButtonActive && selectedMarkerType) {
-        // 기존 마커가 있으면 제거
-        if (selectedMarkerType === 'seller' && currentSellerMarker) {
-            currentSellerMarker.setMap(null);
-        } else if (selectedMarkerType === 'consumer' && currentConsumerMarker) {
-            currentConsumerMarker.setMap(null);
+    function addClickMarker(latlng) {
+        if (isMarkerButtonActive && selectedMarkerType) {
+            // 기존 마커가 있으면 제거
+            if (selectedMarkerType === 'seller' && currentSellerMarker) {
+                currentSellerMarker.setMap(null);
+            } else if (selectedMarkerType === 'consumer' && currentConsumerMarker) {
+                currentConsumerMarker.setMap(null);
+            }
+
+            var markerImageSrc;
+
+            if (selectedMarkerType === 'seller') {
+                markerImageSrc = 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FH5SHB%2FbtsJYBQgzsf%2Fkywe1bytNAy8snM7qf74A0%2Fimg.png';
+            } else if (selectedMarkerType === 'consumer') {
+                markerImageSrc = 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fb7zMNq%2FbtsJZsSsYZK%2F7o2HD6PnjjqpfiIgfSMm21%2Fimg.png';
+            }
+
+            var markerImage = new kakao.maps.MarkerImage(markerImageSrc, new kakao.maps.Size(27, 37));
+            var marker = new kakao.maps.Marker({
+                map: map,
+                position: latlng,
+                image: markerImage
+            });
+
+            // 마커 좌표를 localStorage에 저장
+            localStorage.setItem('selectedLat', latlng.getLat());
+            localStorage.setItem('selectedLng', latlng.getLng());
+
+            var latitudeField = document.getElementById('latitude');
+            var longitudeField = document.getElementById('longitude');
+            if (latitudeField && longitudeField) {
+                latitudeField.value = latlng.getLat() || 0; // 위도 설정, 기본값 0
+                longitudeField.value = latlng.getLng() || 0; // 경도 설정, 기본값 0
+            } else {
+                console.error('위도 또는 경도 입력 필드가 존재하지 않습니다.');
+            }
+
+            if (selectedMarkerType === 'seller') {
+                currentSellerMarker = marker; // 새로운 판매자 마커를 현재 판매자 마커로 저장
+            } else if (selectedMarkerType === 'consumer') {
+                currentConsumerMarker = marker; // 새로운 구매자 마커를 현재 구매자 마커로 저장
+            }
+
+            // 새로 생성된 마커를 클릭했을 때의 이벤트 리스너 추가
+            getAddressFromCoords(latlng, function(address) {
+                attachMarkerClickListener(marker, address, selectedMarkerType === 'seller' ? '판매자 마커' : '구매자 마커', '', '', true);
+            });
+
+            // 새로 생성된 마커에 오른쪽 클릭 이벤트 추가
+            kakao.maps.event.addListener(marker, 'rightclick', function() {
+                console.log('마커 오른쪽 클릭됨'); // 디버깅용 로그
+                removeMarker(marker);
+            });
+
+            // 새로 생성된 마커를 clickMarkers 배열에 추가
+            clickMarkers.push(marker);
         }
-
-        var markerImageSrc;
-
-        if (selectedMarkerType === 'seller') {
-            markerImageSrc = 'https://blog.kakaocdn.net/dn/HgKPK/btsI2daZfdE/EKC5tjviVKLpdegSUR2nrK/img.png';
-        } else if (selectedMarkerType === 'consumer') {
-            markerImageSrc = 'https://blog.kakaocdn.net/dn/bcGdol/btsI2grZhcd/rfOKuVs0IKjlxI7wFb4VqK/img.png';
-        }
-
-        var markerImage = new kakao.maps.MarkerImage(markerImageSrc, new kakao.maps.Size(20, 30));
-        var marker = new kakao.maps.Marker({
-            map: map,
-            position: latlng,
-            image: markerImage
-        });
-
-        // 화면에 좌표 표시
-        var coordinatesDisplay = document.getElementById('coordinatesDisplay');
-        coordinatesDisplay.textContent = '좌표: ' + latlng.getLat() + ', ' + latlng.getLng();
-
-
-// 마커 좌표를 localStorage에 저장
-        localStorage.setItem('selectedLat', latlng.getLat());
-        localStorage.setItem('selectedLng', latlng.getLng());
-
-         var latitudeField = document.getElementById('latitude');
-        var longitudeField = document.getElementById('longitude');
-        if (latitudeField && longitudeField) {
-            latitudeField.value = latlng.getLat() || 0; // 위도 설정, 기본값 0
-            longitudeField.value = latlng.getLng() || 0; // 경도 설정, 기본값 0
-        } else {
-            console.error('위도 또는 경도 입력 필드가 존재하지 않습니다.');
-        }
-
-
-        if (selectedMarkerType === 'seller') {
-            currentSellerMarker = marker; // 새로운 판매자 마커를 현재 판매자 마커로 저장
-        } else if (selectedMarkerType === 'consumer') {
-            currentConsumerMarker = marker; // 새로운 소비자 마커를 현재 소비자 마커로 저장
-        }
-
-        getAddressFromCoords(latlng, function(address) {
-            attachMarkerClickListener(marker, address, selectedMarkerType === 'seller' ? '판매자 마커' : '소비자 마커', '', '', true);
-        });
     }
-}
 
- function sendCoordinates(lat, lng) {
+    function removeMarker(marker) {
+        console.log('마커 제거됨:', marker); // 디버깅용 로그
+        marker.setMap(null);
+        clickMarkers = clickMarkers.filter(function(m) { return m !== marker; });
+    }
+
+
+
+    function sendCoordinates(lat, lng) {
         window.opener.receiveCoordinates(lat, lng);
         window.close(); // 좌표를 보낸 후 현재 창을 닫음
     }
@@ -547,10 +558,13 @@ var markerLng;
                 (isClickMarker ? '                <div class="jibun">주소 상세 정보</div>' : '') +
                 '            </div>' +
                 '        </div>' +
-                (isClickMarker ? '        <div class="buttons">' +
-                    '            <button class="chat" onclick="navigateToChat()">1대1 채팅</button>' +
-                    '            <button class="file-upload" onclick="navigateToFileUpload()">파일 업로드</button>' +
-                    '        </div>' : '') +
+                '        <div class="buttons">' +
+                '            <button class="chat" onclick="navigateToChat()">1대1 채팅</button>' +
+                (isClickMarker && (title === '판매자 마커') ?
+                    '            <button class="file-upload" onclick="sellernavigateToFileUpload()">정보 업로드</button>' :
+                    isClickMarker && (title === '구매자 마커') ?
+                        '            <button class="file-upload" onclick="consumernavigateToFileUpload()">정보 업로드</button>' : '') +
+                '        </div>' +
                 '    </div>' +
                 '</div>';
 
@@ -580,9 +594,12 @@ var markerLng;
         });
     }
 
-    function removeMarker(marker) {
-        marker.setMap(null);
-        clickMarkers = clickMarkers.filter(function(m) { return m !== marker; });
+    function sellernavigateToFileUpload() {
+        window.location.href = 'http://localhost:8080/sellerinformation/write';
+    }
+
+    function consumernavigateToFileUpload() {
+        window.location.href = 'http://localhost:8080/consumerinformation/write';
     }
 
     function closeOverlay(event) {
@@ -594,11 +611,7 @@ var markerLng;
     }
 
     function navigateToChat() {
-        window.location.href = 'http://localhost:8080/board/chat';
-    }
-
-    function navigateToFileUpload() {
-        window.location.href = 'http://localhost:8080/information/write';
+        window.location.href = 'http://localhost:8080/chat/room';
     }
 
     document.getElementById('address').addEventListener('keydown', function(e) {
@@ -632,6 +645,7 @@ var markerLng;
             this.textContent = '마커 생성';
             this.classList.remove('active');
             document.getElementById('markerTypeSelector').style.display = 'none';
+            selectedMarkerType = null; // 선택된 마커 타입을 초기화
         }
     });
 
@@ -647,18 +661,161 @@ var markerLng;
         document.getElementById('markerTypeSelector').style.display = 'none';
     });
 
-    function removeClickMarkers() {
-        clickMarkers.forEach(function(marker) {
-            marker.setMap(null);
-        });
-        clickMarkers = [];
-    }
-
     document.getElementById('map').addEventListener('click', function(event) {
         if (!event.target.classList.contains('close')) {
             document.getElementById('markerTypeSelector').style.display = 'none';
         }
     });
+
+
+    // 마커 삭제 함수
+    function deleteMarkerFromServer(markerId, type) {
+        fetch(`/api/${type}/information/${markerId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Marker deleted:', data);
+            })
+            .catch(error => console.error('Error deleting marker:', error));
+    }
+
+    // 마커 생성 함수
+    function createMarkers(data, type) {
+        if (Array.isArray(data)) {
+            data.forEach(info => {
+                if (info.latitude && info.longitude) {
+                    const markerPosition = new kakao.maps.LatLng(info.latitude, info.longitude);
+
+                    // 판매자와 구매자에 따른 마커 이미지 설정
+                    const imageSrc = type === 'seller'
+                        ? 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FH5SHB%2FbtsJYBQgzsf%2Fkywe1bytNAy8snM7qf74A0%2Fimg.png'
+                        : 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fb7zMNq%2FbtsJZsSsYZK%2F7o2HD6PnjjqpfiIgfSMm21%2Fimg.png';
+                    const imageSize = new kakao.maps.Size(27, 37); // 마커 이미지의 크기
+                    const imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커 이미지의 위치 조정
+                    const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
+
+                    const marker = new kakao.maps.Marker({
+
+
+                        position: markerPosition,
+                        image: markerImage, // 마커에 이미지 설정
+                        map: map
+                    });
+
+                    kakao.maps.event.addListener(marker, 'click', function() {
+                        const address = info.address || "주소 정보가 없습니다.";
+                        const content = `
+                    <div class="wrap">
+                        <div class="info">
+                            <div class="title">
+                                ${info.title}
+                                <div class="close" onclick="closeOverlay()" title="닫기"></div>
+                            </div>
+                            <div class="body">
+                                <div class="img">
+                                    <img src="${info.photoUrl || 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png'}" width="90" height="90">
+                                </div>
+                                <div class="desc">
+                                    <div class="ellipsis">주소: ${address}</div>
+                                    <div class="jibun">주소 상세 정보</div>
+                                    <div class="content">${info.content || "내용이 없습니다."}</div>
+                                    <div class="posted-at">작성일: ${info.postedAt || "작성일 정보 없음"}</div>
+                                </div>
+                            </div>
+                            <div class="buttons">
+                                <button class="chat" onclick="navigateToChat()">1대1 채팅</button>
+                            </div>
+                        </div>
+                    </div>`;
+
+                        const overlay = new kakao.maps.CustomOverlay({
+                            content: content,
+                            map: map,
+                            position: markerPosition
+                        });
+
+                        // 오버레이를 지도에 표시
+                        overlay.setMap(map);
+
+                        // 오버레이를 닫는 함수
+                        function closeOverlay() {
+                            overlay.setMap(null);
+                        }
+                    });
+
+                    kakao.maps.event.addListener(marker, 'rightclick', function() {
+                        deleteMarkerFromServer(info.id, type); // 서버에 삭제 요청 보내기
+                        marker.setMap(null); // 클라이언트에서 마커 삭제
+                    });
+                } else {
+                    console.error('Invalid latitude or longitude:', info);
+                }
+            });
+        } else {
+            console.error('Data is not an array:', data);
+        }
+    }
+
+    // 판매자 정보 마커 생성
+    fetch('/api/seller/information')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.indexOf('application/json') !== -1) {
+                return response.json();
+            } else {
+                throw new Error('Received non-JSON response');
+            }
+        })
+        .then(data => createMarkers(data, 'seller'));
+
+    // 소비자 정보 마커 생성
+    fetch('/api/consumer/information')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.indexOf('application/json') !== -1) {
+                return response.json();
+            } else {
+                throw new Error('Received non-JSON response');
+            }
+        })
+        .then(data => createMarkers(data, 'consumer'));
+
+
+    // 모든 오버레이 닫기
+    function closeOverlay() {
+        const overlays = document.querySelectorAll('.wrap');
+        overlays.forEach(function(overlay) {
+            overlay.parentNode.removeChild(overlay);
+        });
+    }
+
+
+    function openChatRoom(markerId) {
+    // 채팅방을 여는 URL 생성
+    let chatRoomUrl = '/chat/room';
+
+    // 새로운 창으로 채팅방 열기
+    window.open(chatRoomUrl, '_blank');
+}
+
+
+
+
 </script>
 </body>
 </html>

@@ -26,3 +26,9 @@ api:
     client_id: XGxQq_tl4w8M7bdkGhxq
     client_secret: lc7UemRxlE
 
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.hibernate: DEBUG
