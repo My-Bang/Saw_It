@@ -1,13 +1,13 @@
 package com.example.naver.login;
 
+import com.example.naver.entity.SellerInformation;
 import com.example.naver.login.vo.NaverLoginProfile;
 import com.example.naver.login.vo.NaverLoginProfileResponse;
 import com.example.naver.login.vo.NaverLoginVo;
-import com.example.naver.repository.InformationRepository;
+import com.example.naver.repository.SellerInformationRepository;
+import com.example.naver.login.NaverLoginProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -26,7 +26,8 @@ public class NaverLoginService {
     @Autowired
     private NaverLoginProfileRepository naverLoginProfileRepository;
 
-
+    @Autowired
+    private SellerInformationRepository sellerInformationRepository;
 
     @Value("${api.naver.client_id}")
     private String clientId;
@@ -34,14 +35,26 @@ public class NaverLoginService {
     @Value("${api.naver.client_secret}")
     private String clientSecret;
 
-    @Autowired
-    private InformationRepository informationRepository; // InformationRepository 주입
-
-
     @Transactional
     public NaverLoginProfile processNaverLogin(Map<String, String> callbackParams) {
         NaverLoginVo naverLoginVo = requestNaverLoginAccessToken(callbackParams);
-        return requestAndSaveNaverLoginProfile(naverLoginVo);
+        NaverLoginProfile naverLoginProfile = requestAndSaveNaverLoginProfile(naverLoginVo);
+        createSellerInformation(naverLoginProfile);
+        return naverLoginProfile;
+    }
+
+    private void createSellerInformation(NaverLoginProfile naverLoginProfile) {
+        // 이미 존재하는 이메일인지 확인
+        if (sellerInformationRepository.existsByEmail(naverLoginProfile.getEmail())) {
+            return;
+        }
+
+        SellerInformation sellerInformation = new SellerInformation();
+        sellerInformation.setUserName(naverLoginProfile.getName());
+        sellerInformation.setEmail(naverLoginProfile.getEmail());
+        sellerInformation.setPostedAt(LocalDateTime.now());
+
+        sellerInformationRepository.save(sellerInformation);
     }
 
     public NaverLoginVo requestNaverLoginAccessToken(Map<String, String> callbackParams) {
@@ -72,7 +85,14 @@ public class NaverLoginService {
                 .block();
 
         NaverLoginProfileResponse.Response profileData = profileResponse.getResponse();
+
         LocalDateTime loginTime = LocalDateTime.now();
+
+        // 중복 체크
+        NaverLoginProfile existingProfile = naverLoginProfileRepository.findByEmail(profileData.getEmail());
+        if (existingProfile != null) {
+            return existingProfile;
+        }
 
         NaverLoginProfile naverLoginProfile = NaverLoginProfile.builder()
                 .name(profileData.getName())
@@ -89,26 +109,12 @@ public class NaverLoginService {
 
     @Transactional(readOnly = true)
     public NaverLoginProfile getLastNaverProfile() {
-        Pageable pageable = PageRequest.of(0, 1); // 한 개의 프로필만 요청
-        List<NaverLoginProfile> profiles = naverLoginProfileRepository.findLatestProfiles(pageable);
+        List<NaverLoginProfile> profiles = naverLoginProfileRepository.findLatestProfiles();
         if (profiles.isEmpty()) {
             throw new ProfileNotFoundException("No profiles found.");
+        } else if (profiles.size() > 1) {
+            System.err.println("Warning: Multiple profiles found, returning the first one.");
         }
         return profiles.get(0);
     }
-
-    public void someMethod() {
-        List<NaverLoginProfile> profiles = naverLoginProfileRepository.findLatestProfiles(PageRequest.of(0, 5)); // 최근 5개 프로필 가져오기
-        for (NaverLoginProfile profile : profiles) {
-            System.out.println("Latest Profile: " + profile.getEmail());
-        }
-    }
-
-    public List<NaverLoginProfile> getLatestProfiles() {
-        Pageable pageable = PageRequest.of(0, 10); // 예: 첫 번째 페이지, 10개 항목
-        return naverLoginProfileRepository.findLatestProfiles(pageable);
-    }
-
-
-
 }

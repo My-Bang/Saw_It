@@ -14,7 +14,7 @@ public class NaverLoginVo {
     // 접근 토큰의 타입으로 Bearer와 MAC의 두 가지를 지원
     private String token_type;
 
-    // 	접근 토큰의 유효 기간(초 단위)
+    //    접근 토큰의 유효 기간(초 단위)
     private String expires_in;
 
     // 에러 코드

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>작성자 정보</title>
+    <title>판매자 정보</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -67,19 +67,21 @@
             background-color: #0056b3;
         }
 
-        #displayUserName {
-            margin-top: -10px;
-            font-size: 16px;
-            color: #333;
+        #preview {
+            margin-top: 20px;
             text-align: center;
-            display: none;
+        }
+
+        #preview img, #preview video {
+            max-width: 100%;
+            border-radius: 5px;
         }
     </style>
 </head>
 
 <body>
 <div class="layout">
-    <h2>작성자 정보</h2>
+    <h2>판매자 정보</h2>
     <form action="/seller/information/writedo" method="post" enctype="multipart/form-data" onsubmit="saveUserName()">
         <label for="title">제목</label>
         <input id="title" name="title" type="text" required>
@@ -91,18 +93,19 @@
         <textarea id="content" name="content" rows="8" required></textarea>
 
         <label for="file">파일 업로드</label>
-        <input style="margin-bottom: 10px " type="file" id="file" name="file">
+        <input style="margin-bottom: 10px" type="file" id="file" name="file" onchange="previewFile()">
+
+        <div id="preview"></div>
 
         <input type="hidden" name="latitude" id="latitude" required />
         <input type="hidden" name="longitude" id="longitude" required />
 
-        <button type="submit" >작성</button>
+        <button type="submit">작성</button>
         <button type="button" onclick="goBack()">뒤로가기</button>
     </form>
 </div>
 
 <script>
-
     window.onload = function() {
         var storedLat = localStorage.getItem('selectedLat');
         var storedLng = localStorage.getItem('selectedLng');
@@ -110,10 +113,8 @@
         if (storedLat && storedLng) {
             document.getElementById('latitude').value = storedLat;
             document.getElementById('longitude').value = storedLng;
-
         }
     };
-
 
     function saveUserName() {
         var userName = document.getElementById("userName").value;
@@ -123,7 +124,41 @@
     function goBack() {
         window.history.back();
     }
-</script>
 
+    function previewFile() {
+        const file = document.getElementById('file').files[0];
+        const preview = document.getElementById('preview');
+        preview.innerHTML = ''; // Clear previous content
+
+        if (file) {
+            const fileType = file.type;
+            const url = URL.createObjectURL(file);
+
+            if (fileType.startsWith('image/')) {
+                // If the file is an image
+                const img = document.createElement('img');
+                img.src = url;
+                img.alt = 'Image Preview';
+                preview.appendChild(img);
+            } else if (fileType.startsWith('video/')) {
+                // If the file is a video
+                const video = document.createElement('video');
+                video.src = url;
+                video.controls = true;
+                video.alt = 'Video Preview';
+
+                // Set video preview duration to 5 seconds
+                video.addEventListener('timeupdate', function() {
+                    if (video.currentTime >= 5) {
+                        video.pause();
+                        video.currentTime = 0;
+                    }
+                });
+
+                preview.appendChild(video);
+            }
+        }
+    }
+</script>
 </body>
 </html>

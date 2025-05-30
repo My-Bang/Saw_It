@@ -17,9 +17,10 @@ public class WebSockConfig implements WebSocketMessageBrokerConfigurer {
         config.setApplicationDestinationPrefixes("/pub");
 
     }
-        @Override
-        public void registerStompEndpoints (StompEndpointRegistry registry){
-            registry.addEndpoint("/ws-stomp").setAllowedOriginPatterns("*")
-                    .withSockJS();
-        }
+    @Override
+    public void registerStompEndpoints (StompEndpointRegistry registry){
+        registry.addEndpoint("/ws-stomp").setAllowedOriginPatterns("*")
+                .addInterceptors(new HttpSessionHandshakeInterceptor())
+                .withSockJS();
     }
+}

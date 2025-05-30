@@ -13,14 +13,11 @@ import java.util.UUID;
 @Setter
 public class ChatRoom {
 
-    private String roomId;
+    private String markId;
 
-    private String name;
-
-    public static ChatRoom create(String name) {
+    public static ChatRoom create(String markId) {
         ChatRoom chatRoom = new ChatRoom();
-        chatRoom.roomId = UUID.randomUUID().toString();
-        chatRoom.name = name;
+        chatRoom.markId = markId;
         return chatRoom;
     }
 }

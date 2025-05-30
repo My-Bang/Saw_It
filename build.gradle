@@ -11,7 +11,6 @@ sourceCompatibility = '17'
 java {
 	sourceCompatibility = JavaVersion.VERSION_17
 	targetCompatibility = JavaVersion.VERSION_17
-
 }
 
 configurations {
@@ -20,9 +19,15 @@ configurations {
 	}
 }
 
+configurations.all {
+	resolutionStrategy {
+		force 'org.apache.groovy:groovy-xml:4.0.11'
+		force 'org.codehaus.groovy:groovy-xml:3.0.15'
+	}
+}
+
 repositories {
 	mavenCentral()
-	jcenter() // JCenter 리포지토리 추가
 }
 
 dependencies {
@@ -38,7 +43,9 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-	testImplementation 'io.rest-assured:rest-assured:5.3.0'
+	testImplementation 'io.rest-assured:rest-assured:5.3.2'
+	testImplementation 'io.rest-assured:json-path:5.3.2'
+	testImplementation 'io.rest-assured:xml-path:5.3.2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	implementation group: 'org.webjars', name: 'sockjs-client', version: '1.1.2'
@@ -55,10 +62,3 @@ tasks.named('test') {
 tasks.named('compileJava') {
 	inputs.files(tasks.named('processResources'))
 }
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-
-}
-

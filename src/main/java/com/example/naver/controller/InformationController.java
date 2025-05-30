@@ -37,7 +37,7 @@ public class InformationController {
 
     public InformationController(NaverLoginProfileRepository naverLoginProfileRepository,
                                  InformationRepository informationRepository
-                                  ) {
+    ) {
         this.naverLoginProfileRepository = naverLoginProfileRepository;
         this.informationRepository = informationRepository;
     }

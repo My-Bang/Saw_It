@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/seller")
@@ -16,9 +17,18 @@ public class SellerInformationApiController {
     private SellerInformationService sellerInformationService;
 
 
+    // 정보 가져오는 API (필터링 추가)
     @GetMapping("/information")
-    public ResponseEntity<List<SellerInformation>> getInformation() {
+    public ResponseEntity<List<SellerInformation>> getInformation(@RequestParam(required = false) String email) {
         List<SellerInformation> infoList = sellerInformationService.getAllInformation();
+
+        if (email != null) {
+            // 요청한 이메일과 일치하는 판매자 정보만 필터링
+            infoList = infoList.stream()
+                    .filter(info -> info.getEmail().equals(email))
+                    .collect(Collectors.toList());
+        }
+
         return ResponseEntity.ok(infoList);
     }
 

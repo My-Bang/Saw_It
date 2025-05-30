@@ -22,7 +22,11 @@ public class SellerInformationService {
     @Autowired
     private SellerInformationRepository sellerInformationRepository;
 
-    public void write(SellerInformation information, MultipartFile file) throws IOException {
+    // 수정된 write 메서드
+    public Integer write(SellerInformation information, String userEmail, MultipartFile file) throws IOException {
+        // 이메일 설정
+        information.setEmail(userEmail);
+
         if (file != null && !file.isEmpty()) {
             String projectPath = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\files";
             UUID uuid = UUID.randomUUID();
@@ -40,7 +44,7 @@ public class SellerInformationService {
         }
 
         information.setPostedAt(LocalDateTime.now());
-        sellerInformationRepository.save(information);
+        return sellerInformationRepository.save(information).getId();
     }
 
     public void write(SellerInformation information) {

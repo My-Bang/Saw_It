@@ -3,13 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>네이버 로그인 성공</title>
+    <title>Saw It 개인 정보</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            padding: 20px;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f0f2f5;
+            padding: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .profile-container {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 400px;
             text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-container:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            background: repeating-linear-gradient(
+                    45deg,
+                    #4da6ff,
+                    #4da6ff 10px,
+                    #c0c0c0 10px,
+                    #c0c0c0 20px
+            ); /* 파란색과 실버 줄무늬 */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            font-size: 16px;
+            margin: 15px 0;
+            color: #333;
+        }
+
+        p span {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .profile-container p span.value {
+            font-weight: normal;
+            color: midnightblue;
+        }
+
+        .profile-container p span.value::before {
+            content: " ";
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            padding-top: 60px;
+            background-color: #eef2f3;
+        }
+
+        #header {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            height: 115px;
+            position: absolute;
+            top: -10.5px;
+            width: 100%;
+            z-index: 3;
+            padding-left: 40px; /* 왼쪽 여백을 40px로 설정하여 배너를 오른쪽으로 이동 */
+            background-color: #ffffff; /* 헤더에만 흰색 배경 추가 */
+        }
+
+        #menu {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            height: 70px;
+            position: absolute;
+            top: 30px;
+            width: 40%;
+            z-index: 4;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+
+        #header img {
+            width: 200px;
+            height: 100px;
+        }
+
+        .menu-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            color: black;
+            transition: background-color 0.3s;
+            position: relative;
+            font-size: 20px;
+            margin: 0 10px;
+        }
+        .menu-item:hover {
+            background-color: #555;
+        }
+        #map-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
+            height: calc(100vh - 100px);
+            position: absolute;
+            top: 105px;
+            z-index: 1;
+        }
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        ul, ol {
+            list-style: none;
+        }
+
+        .menu-link {
+            text-decoration: none;
+            color: #000000;
+            font-size: 18px;
+            display: block;
+            padding: 0 20px;
+            height: 70px;
+            line-height: 70px;
+            transition: color 0.3s, background-color 0.3s, transform 0.3s;
+        }
+
+        .menu-link:hover {
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .default-link {
+            text-decoration: none;
+            color: #4a90e2;
+            font-size: 18px;
+        }
+
+        nav {
+            width: 100%;
+            overflow: hidden;
+            height: 70px;
+            background-color: #fff;
+            margin: 0 auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            animation: navSlide 0.5s ease-out;
+        }
+
+        #nav1 {
+            text-align: center;
+        }
+        #nav1 > ul {
+            display: inline-block;
+        }
+        #nav1 > ul li {
+            display: inline-block;
+            margin: 0 15px;
+            line-height: 70px;
+            position: relative;
+        }
+        #nav1 > ul li:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1px;
+            height: 50%;
+            background-color: #8C8688;
+        }
+        @keyframes navSlide {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         .profile-container {
             background-color: #fff;
@@ -20,31 +216,98 @@
             text-align: left;
         }
         .profile-container h2 {
+            font-size: 24px;
             color: #1ec800;
             margin-bottom: 20px;
         }
         .profile-container p {
-            margin: 10px 0;
-            font-size: 16px;
+            line-height: 1.6;
+            letter-spacing: 0.5px;
         }
         .profile-container p span {
             font-weight: bold;
         }
+        .highlighted-label {
+            background: repeating-linear-gradient(
+                    45deg,
+                    #4da6ff,
+                    #4da6ff 10px,
+                    #c0c0c0 10px,
+                    #c0c0c0 20px
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
-<div class="profile-container">
-    <h2>네이버 로그인 성공!</h2>
-    <p><span>이름:</span> <span th:text="${naverProfile.name != null ? naverProfile.name : '정보 없음'}">이름</span></p>
-    <p><span>이메일:</span> <span th:text="${naverProfile.email != null ? naverProfile.email : '정보 없음'}">이메일</span></p>
-    <p><span>성별:</span> <span th:text="${naverProfile.gender != null ? naverProfile.gender : '정보 없음'}">성별</span></p>
-    <p><span>생일:</span>
-        <span th:text="${naverProfile.birthyear != null ? naverProfile.birthyear : 'YYYY'}">YYYY</span>-
-        <span th:text="${naverProfile.birthday != null ? naverProfile.birthday : 'MM-DD'}">MM-DD</span>
-    </p>
-    <p><span>모바일:</span> <span th:text="${naverProfile.mobile != null ? naverProfile.mobile : '정보 없음'}">휴대전화</span></p>
-    <p><span>로그인 시간:</span> <span th:text="${naverProfile.loginTime != null ? naverProfile.loginTime : '정보 없음'}">로그인 시간</span></p>
-
+<div id="header">
+    <a href="http://localhost:8080/board/map.html">
+        <img src="https://blog.kakaocdn.net/dn/FR3pX/btsHPV3WMkV/FiitqJss9q7kNdF848IGB0/img.png" alt="배너이미지">
+    </a>
 </div>
+</div><div id="menu">
+    <nav id="nav1">
+        <ul>
+            <li><a href="#" onclick="navigate('튜토리얼')" class="menu-link">튜토리얼</a></li>
+            <li><a href="#" onclick="navigate('커뮤니티')" class="menu-link">커뮤니티</a></li>
+            <li><a href="#" onclick="navigate('전문가 상담')" class="menu-link">전문가 상담</a></li>
+            <li><a href="#" onclick="navigate('Q & A')" class="menu-link">Q & A</a></li>
+            <li><a href="#" onclick="navigate('프로필')" class="menu-link">프로필</a></li>
+        </ul>
+    </nav>
+</div>
+<div class="profile-container">
+    <h2>Saw It 개인 정보</h2>
+
+    <p><span class="highlighted-label">이름:</span> <span class="value" th:text="${naverProfile.name != null ? naverProfile.name : '정보 없음'}">이름</span></p>
+    <p><span class="highlighted-label">이메일:</span> <span class="value" id="profileEmail" th:text="${naverProfile.email != null ? naverProfile.email : '정보 없음'}">이메일</span></p>
+    <p><span class="highlighted-label">성별:</span> <span class="value" th:text="${naverProfile.gender != null ? naverProfile.gender : '정보 없음'}">성별</span></p>
+    <p><span class="highlighted-label">생일:</span>
+        <span class="value" th:text="${naverProfile.birthyear != null ? naverProfile.birthyear : 'YYYY'}">YYYY</span>-
+        <span class="value" th:text="${naverProfile.birthday != null ? naverProfile.birthday : 'MM-DD'}">MM-DD</span>
+    </p>
+    <p><span class="highlighted-label">전화번호:</span> <span class="value" th:text="${naverProfile.mobile != null ? naverProfile.mobile : '정보 없음'}">전화번호</span></p>
+    <p><span class="highlighted-label">로그인 시간:</span> <span class="value" th:text="${naverProfile.loginTime != null ? naverProfile.loginTime : '정보 없음'}">로그인 시간</span></p>
+
+    <!-- 마커 개수 표시 -->
+    <p><span class="highlighted-label">내가 생성한 마커 개수:</span>
+        <span class="value" id="markerCount">0</span> <!-- 초기값 0, JavaScript에서 업데이트 -->
+    </p>
+</div>
+
+<script>
+    function navigate(destination) {
+    if (destination === '커뮤니티') {
+        window.location.href = 'http://localhost:8080/board/list';
+    } else if (destination === '프로필') {
+        window.location.href = 'http://localhost:8080/naver/profile';
+    } else if (destination === '튜토리얼') {
+        window.location.href = 'http://localhost:8080/board/tutorial';
+    } else if (destination === '전문가 상담') {
+        window.location.href = 'http://localhost:8080/';
+    } else if (destination === 'Q & A') {
+        window.location.href = 'http://localhost:8080/board/Q&A';
+    }
+}
+// 페이지가 로드될 때 서버에서 마커 개수를 가져옵니다.
+window.onload = function() {
+    fetchMarkerCount();
+};
+
+function fetchMarkerCount() {
+    fetch('/api/profile/getMarkerCount')
+        .then(response => response.json())
+        .then(data => {
+            const markerCountDisplay = document.getElementById('markerCount');
+            markerCountDisplay.innerText = data;  // 서버에서 받아온 마커 개수를 표시
+        })
+        .catch(error => {
+            console.error('마커 개수 가져오기 실패:', error);
+        });
+}
+</script>
 </body>
 </html>

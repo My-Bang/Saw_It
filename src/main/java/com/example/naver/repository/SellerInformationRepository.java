@@ -13,4 +13,7 @@ public interface SellerInformationRepository extends JpaRepository<SellerInforma
     Page<SellerInformation> findByTitleContainingAndDeletedFalse(String searchKey, Pageable pageable);
     Page<SellerInformation> findByDeletedFalse(Pageable pageable);
     List<SellerInformation> findByDeletedFalse();
+    boolean existsByEmail(String email);
+
 }
+

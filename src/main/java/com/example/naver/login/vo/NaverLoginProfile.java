@@ -5,8 +5,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Getter
 @Entity
+@Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,16 +17,14 @@ public class NaverLoginProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
-    @Column(unique = true)  // 유니크 제약 조건
-    private String email;  // email 컬럼이 String 타입으로 정의됨
+    private String email;
     private String gender;
     private String birthday;
     private String birthyear;
     private String mobile;
 
+    // 접속 시각 필드 추가
     private LocalDateTime loginTime;
-    public NaverLoginProfile(String email) {
-        this.email = email;
-    }
 }
