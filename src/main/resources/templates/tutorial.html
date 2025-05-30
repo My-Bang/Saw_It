@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f0fadb18408cdb55d9431eca1e67b1b7&libraries=services"></script>
+    <title>튜토리얼</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            padding-top: 40px;
+            background-color: #eef2f3;
+        }
+        #header {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            height: 115px;
+            position: absolute;
+            top: -10.5px;
+            width: 100%;
+            z-index: 3;
+            padding-left: 40px;
+            background-color: #ffffff;
+        }
+        #menu {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            height: 70px;
+            position: absolute;
+            top: 30px;
+            width: 40%;
+            z-index: 4;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        #header img {
+            width: 200px;
+            height: 100px;
+        }
+        .menu-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            color: black;
+            transition: background-color 0.3s;
+            position: relative;
+            font-size: 20px;
+            margin: 0 10px;
+        }
+        .menu-item:hover {
+            background-color: #555;
+        }
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        ul, ol {
+            list-style: none;
+        }
+        .menu-link {
+            text-decoration: none;
+            color: #000000;
+            font-size: 18px;
+            display: block;
+            padding: 0 20px;
+            height: 70px;
+            line-height: 70px;
+            transition: color 0.3s, background-color 0.3s, transform 0.3s;
+        }
+        .menu-link:hover {
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        .default-link {
+            text-decoration: none;
+            color: #4a90e2;
+            font-size: 18px;
+        }
+        nav {
+            width: 100%;
+            overflow: hidden;
+            height: 70px;
+            background-color: #fff;
+            margin: 0 auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            animation: navSlide 0.5s ease-out;
+        }
+        #nav1 {
+            text-align: center;
+        }
+        #nav1 > ul {
+            display: inline-block;
+        }
+        #nav1 > ul li {
+            display: inline-block;
+            margin: 0 15px;
+            line-height: 70px;
+            position: relative;
+        }
+        #nav1 > ul li:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1px;
+            height: 50%;
+            background-color: #8C8688;
+        }
+        @keyframes navSlide {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        section {
+            padding: 50px 20px;
+            margin-top: 80px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        h2 {
+            color: #333;
+        }
+        #map {
+            width: 100%;
+            height: 400px;
+            margin-top: 20px;
+            border-radius: 8px;
+            position: relative;
+        }
+        .tutorial-message {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            width: 60%;
+            text-align: center;
+            display: none;
+            z-index: 5;
+        }
+        .btn-next {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            margin-top: 20px;
+        }
+        .btn-next:hover {
+            background-color: #45a049;
+        }
+        .tutorial-btn-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+    .buttons {
+        text-align: right; /* 오른쪽 정렬 */
+        position: absolute; /* 절대 위치 지정 */
+        top: 100px; /* 원하는 위치로 조정 */
+        right: 10px; /* 오른쪽에 위치 */
+    }
+
+    .chat {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    display: inline-block; /* 인라인 블록으로 설정 */
+    min-width: 75px; /* 최소 너비 설정 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+     /* 버튼 호버 효과 */
+.chat:hover {
+    background-color: #45a049;
+}
+
+.wrap {
+    position: absolute;
+    left: 0;
+    bottom: 40px;
+    width: 288px;
+    height: 132px;
+    margin-left: -144px;
+    text-align: left;
+    overflow: hidden;
+    font-size: 12px;
+    font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;
+    line-height: 1.5;
+}
+
+.wrap * {
+    padding: 0;
+    margin: 0;
+}
+
+.wrap .info {
+    width: 286px;
+    height: auto; /* Change from fixed height to auto */
+    border-radius: 5px;
+    border-bottom: 2px solid #ccc;
+    border-right: 1px solid #ccc;
+    overflow: hidden;
+    background: #fff;
+}
+
+.wrap .info:nth-child(1) {
+    border: 0;
+    box-shadow: 0px 1px 2px #888;
+}
+
+.info .title {
+    padding: 5px 0 0 10px;
+    height: 30px;
+    background: #eee;
+    border-bottom: 1px solid #ddd;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.info .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #888;
+    width: 17px;
+    height: 17px;
+    background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/overlay_close.png');
+}
+
+.info .close:hover {
+    cursor: pointer;
+}
+
+.info .body {
+    position: relative;
+    overflow: hidden;
+}
+
+.info .desc {
+    position: relative;
+    margin: 13px 0 0 90px;
+    height: 75px;
+}
+
+.desc .ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.desc .jibun {
+    font-size: 11px;
+    color: #888;
+    margin-top: -2px;
+}
+
+.info .img {
+    position: absolute;
+    top: 6px;
+    left: 5px;
+    width: 73px;
+    height: 71px;
+    border: 1px solid #ddd;
+    color: #888;
+    overflow: hidden;
+}
+
+.info:after {
+    content: '';
+    position: absolute;
+    margin-left: -12px;
+    left: 50%;
+    bottom: 0;
+    width: 22px;
+    height: 12px;
+    background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png');
+}
+
+.info .link {
+    color: #5085BB;
+}
+
+    </style>
+</head>
+<body>
+<div class="layout">
+    <div id="header">
+        <a href="map.html" class="default-link">
+            <img src="https://blog.kakaocdn.net/dn/FR3pX/btsHPV3WMkV/FiitqJss9q7kNdF848IGB0/img.png" alt="배너이미지">
+        </a>
+    </div>
+</div>
+<div id="menu">
+    <nav id="nav1">
+        <ul>
+            <li><a href="#" onclick="navigate('튜토리얼')" class="menu-link">튜토리얼</a></li>
+            <li><a href="#" onclick="navigate('커뮤니티')" class="menu-link">커뮤니티</a></li>
+            <li><a href="#" onclick="navigate('전문가 상담')" class="menu-link">전문가 상담</a></li>
+            <li><a href="#" onclick="navigate('Q & A')" class="menu-link">Q & A</a></li>
+            <li><a href="#" onclick="navigate('프로필')" class="menu-link">프로필</a></li>
+        </ul>
+    </nav>
+</div>
+<section>
+    <h2>1. 주소 검색 기능</h2>
+    <input type="text" id="address" placeholder="주소를 입력하세요" style="width: 80%; padding: 10px; margin-right: 10px;">
+    <button class="btn-next" id="searchButton">검색</button>
+    <div class="tutorial-message" id="tutorial-step1">
+        <p>사고 또는 사고 목격한 주소를 입력하고 '검색' 버튼을 클릭해 보세요!</p>
+    </div>
+</section>
+<section>
+    <h2>2. 지도 사용법</h2>
+    <div id="map"></div>
+    <div class="tutorial-message" id="tutorial-step2">
+        <p>지도를 끌어 해당 위치에 지도를 클릭하여 마커를 생성해보세요!</p>
+    </div>
+    <div class="tutorial-message" id="tutorial-step3">
+        <p>마커를 클릭하여 정보 업로드 버튼을 눌러보세요!</p>
+    </div>
+</section>
+<footer>
+    <p>&copy; 2024 지도 튜토리얼</p>
+</footer>
+<script type="text/javascript">
+    function navigate(destination) {
+        if (destination === '커뮤니티') {
+            window.location.href = 'http://localhost:8080/board/list';
+        } else if (destination === '프로필') {
+            window.location.href = 'http://localhost:8080/naver/profile';
+        } else if (destination === '튜토리얼') {
+            window.location.href = 'http://localhost:8080/board/tutorial';
+        } else if (destination === '전문가 상담') {
+            window.location.href = 'http://localhost:8080/';
+        } else if (destination === 'Q & A') {
+            window.location.href = 'http://localhost:8080/board/Q&A';
+        }
+    }
+
+    var map;
+    var geocoder;
+    var marker;
+    var currentStep = 1;
+    var overlay;
+
+    function initMap() {
+        map = new kakao.maps.Map(document.getElementById('map'), {
+            center: new kakao.maps.LatLng(33.450701, 126.570667),
+            level: 3
+        });
+        geocoder = new kakao.maps.services.Geocoder();
+        showTutorialStep(currentStep);
+        kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+            var position = mouseEvent.latLng;
+            addMarker(position);
+        });
+    }
+
+    function addMarker(position) {
+        if (overlay && overlay.getMap()) {
+            return;
+        }
+        if (marker) {
+            marker.setMap(null);
+        }
+        marker = new kakao.maps.Marker({
+            position: position
+        });
+        marker.setMap(map);
+
+        var content = `
+            <div class="wrap">
+                <div class="info">
+                    <div class="title">
+                        마커 정보
+                        <div class="close" onclick="closeOverlay()" title="닫기"></div>
+                    </div>
+                    <div class="body">
+                        <div class="img">
+                            <img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumnail.png" width="73" height="70">
+                        </div>
+                        <div class="desc">
+                            <div class="ellipsis">주소: 서울 강남구 테헤란로 14길 6</div>
+                            <div class="jibun">주소 상세 정보</div>
+                            <div class="content">내용이 없습니다.</div>
+                        </div>
+                    </div>
+                    <div class="buttons">
+                        <button class="chat" onclick="uploadInfo()">정보 업로드</button>
+                    </div>
+                </div>
+            </div>`;
+
+        overlay = new kakao.maps.CustomOverlay({
+            content: content,
+            map: null,
+            position: marker.getPosition()
+        });
+
+        kakao.maps.event.addListener(marker, 'click', function() {
+            overlay.setMap(map);
+        });
+
+        if (currentStep === 2) {
+            currentStep = 3;
+            showTutorialStep(currentStep);
+        }
+    }
+
+    function closeOverlay() {
+        if (overlay) {
+            overlay.setMap(null);
+        }
+    }
+
+    function uploadInfo() {
+        alert("이제 메인페이지로 가서 시작해 보세요!");
+    }
+
+    function searchAddress() {
+        var address = document.getElementById('address').value;
+        geocoder.addressSearch(address, function(result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+                var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+                map.setCenter(coords);
+                addMarker(coords);
+                if (currentStep === 1) {
+                    currentStep = 2;
+                    showTutorialStep(currentStep);
+                }
+            }
+        });
+    }
+
+
+function showTutorialStep(step) {
+        // Reset styles for all steps
+        for (var i = 1; i <= 3; i++) {
+            var stepElement = document.getElementById('tutorial-step' + i);
+            if (stepElement) {
+                stepElement.style.display = 'none';
+            }
+        }
+
+        // Set styles and show the current step
+        var stepElement = document.getElementById('tutorial-step' + step);
+        if (stepElement) {
+            stepElement.style.display = 'block';
+        }
+
+        // Make the appropriate elements transparent based on the current step
+        if (step === 1) {
+        document.querySelector('section').style.opacity = '1';
+        document.querySelector('section').style.pointerEvents = 'auto';
+        document.getElementById('map').style.opacity = '0.2';
+        document.getElementById('map').style.pointerEvents = 'none';
+    } else if (step === 2 || step === 3) {
+        document.querySelector('section').style.opacity = '0.2';
+        document.querySelector('section').style.pointerEvents = 'none';
+        document.getElementById('map').style.opacity = '1';
+        document.getElementById('map').style.pointerEvents = 'auto';
+    }
+    }
+
+kakao.maps.load(initMap);
+document.getElementById('searchButton').addEventListener('click', searchAddress);
+</script>
+</body>
+</html>
